@@ -24,6 +24,9 @@ void GameScene::menuCallback(CCObject* pSender)
 
 GameLayer::GameLayer()
 {
+	//TODO...
+	//create game including loading game data from file,
+
 	m_ballVelocity = ccp(40.0f, -400.0f);
 	m_ball = Ball::ballWithTexture(CCTextureCache::sharedTextureCache()->addImage("gfx/ball.png"), CCRectMake(0,0,12,12));
 	m_ball->setVelocity(m_ballVelocity);
@@ -50,6 +53,10 @@ GameLayer::~GameLayer()
 
 void GameLayer::update(float delta)
 {
+	//this is mainly function to control the whole game
+	//it should update compnonents' movement and check interaction between components
+	//it should also control the whole game layer display
+
 	m_ball->move(delta);
 	m_ball->collideWithPaddle(m_paddle);
 
