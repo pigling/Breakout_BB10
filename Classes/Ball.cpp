@@ -31,13 +31,13 @@ Ball* Ball::ballWithTexture(CCTexture2D* aTexture, CCRect rect)
 void Ball::move(float delta)
 {
     this->setPosition( ccpAdd(getPosition(), ccpMult(m_velocity, delta)) );
-    
+
     if (getPosition().x > GameAreaDef::getBallMoveRect().getMaxX() - radius())
     {
         setPosition( ccp( GameAreaDef::getBallMoveRect().getMaxX() - radius(), getPosition().y) );
         m_velocity.x *= -1;
         setBallColor(BLUE_BALL);
-    } 
+    }
     else if (getPosition().x < GameAreaDef::getBallMoveRect().getMinX() + radius())
     {
         setPosition( ccp(GameAreaDef::getBallMoveRect().getMinX() + radius(), getPosition().y) );
@@ -45,15 +45,15 @@ void Ball::move(float delta)
         setBallColor(RED_BALL);
     }
 
-    if (getPosition().y > GameAreaDef::getScoreRect().getMaxY() - radius())
+    if (getPosition().y > GameAreaDef::getScoreRect().getMinY() - radius())
     {
-    	setPosition(ccp(getPosition().x, GameAreaDef::getScoreRect().getMaxY()-radius()));
+    	setPosition(ccp(getPosition().x, GameAreaDef::getScoreRect().getMinY()-radius()));
     	m_velocity.y *= -1;
         setBallColor(DEEPGREY_BALL);
     }
-    else if (getPosition().y < GameAreaDef::getScoreRect().getMinY() + radius())
+    else if (getPosition().y < GameAreaDef::getFingerTouchRect().getMinY() + radius())
     {
-    	setPosition(ccp(getPosition().x, GameAreaDef::getScoreRect().getMinY()+radius()));
+    	setPosition(ccp(getPosition().x, GameAreaDef::getFingerTouchRect().getMinY()+radius()));
     	m_velocity.y *= -1;
         setBallColor(GREY_BALL);
     }
@@ -64,19 +64,19 @@ void Ball::collideWithPaddle(Paddle* paddle)
     CCRect paddleRect = paddle->rect();
     paddleRect.origin.x += paddle->getPosition().x;
     paddleRect.origin.y += paddle->getPosition().y;
-    
+
     float lowY  = paddleRect.getMinY();
     float midY  = paddleRect.getMidY();
     float highY = paddleRect.getMaxY();
-    
+
     float leftX  = paddleRect.getMinX();
     float rightX = paddleRect.getMaxX();
-    
+
     if (getPosition().x > leftX && getPosition().x < rightX) {
-    
+
         bool hit = false;
-        float angleOffset = 0.0f; 
-        
+        float angleOffset = 0.0f;
+
         if (getPosition().y <= highY + radius())
         {
             setPosition( ccp(getPosition().x, highY + radius()) );
@@ -85,19 +85,19 @@ void Ball::collideWithPaddle(Paddle* paddle)
             //CCLog("%f, %f, %f", getPosition().y, highY, radius());
         }
 
-        
-        if (hit) 
+
+        if (hit)
         {
             float hitAngle = ccpToAngle(ccpSub(paddle->getPosition(), getPosition())) + angleOffset;
-            
+
             float scalarVelocity = ccpLength(m_velocity) * 1.05f;
             float velocityAngle = -ccpToAngle(m_velocity) + 0.5f * hitAngle;
-            
+
             m_velocity = ccpMult(ccpForAngle(velocityAngle), scalarVelocity);
             setBallColor(GREEN_BALL);
         }
-    }    
-} 
+    }
+}
 
 void Ball::setBallColor(BallColor color)
 {
