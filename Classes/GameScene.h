@@ -12,6 +12,9 @@
 
 USING_NS_CC;
 
+class Ball;
+class Paddle;
+class Brick;
 
 class GameScene : public CCScene
 {
@@ -22,14 +25,14 @@ public:
 	virtual void menuCallback(CCObject* pSender);
 };
 
-class Ball;
-class Paddle;
+
 
 class GameLayer : public CCLayer
 {
 private:
 	Ball* m_ball;
 	Paddle* m_paddle;
+	Brick* m_brick;
 	CCPoint m_ballVelocity;
 
 public:

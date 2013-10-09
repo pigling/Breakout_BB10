@@ -25,12 +25,18 @@ CCRect Brick::rect()
 	return CCRectMake(-s.x/2, -s.y/2, s.x, s.y);
 }
 
-Brick* Brick::createBrick(CCTexture2D* aTexture, BrickType type)
+Brick* Brick::createBrick(CCTexture2D* aTexture)
 {
 	Brick* pBrick = new Brick();
-	pBrick->initWithTexture(aTexture, CCRectMake(type*BRICK_RECT.x, 0, BRICK_RECT.x, BRICK_RECT.y));
+	pBrick->initWithTexture(aTexture);
+	pBrick->setTextureRect(CCRectMake(BRICK_RECT.x, 0, BRICK_RECT.x, BRICK_RECT.y));
 	pBrick->setScale(BRICK_SCALE_FACTOR);
 	pBrick->autorelease();
 
 	return pBrick;
+}
+
+void Brick::setBrickStatu(BrickType type)
+{
+	setTextureRect(CCRectMake(type*BRICK_RECT.x, 0, BRICK_RECT.x, BRICK_RECT.y));
 }

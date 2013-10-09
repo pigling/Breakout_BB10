@@ -8,6 +8,7 @@
 #include "GameScene.h"
 #include "Ball.h"
 #include "Paddle.h"
+#include "Brick.h"
 #include "constant.h"
 
 GameScene::GameScene()
@@ -42,6 +43,13 @@ GameLayer::GameLayer()
 	addChild(m_paddle);
 	m_paddle->retain();
 
+	CCTexture2D* brickTexture = CCTextureCache::sharedTextureCache()->addImage("gfx/bricks.png");
+	m_brick = Brick::createBrick(brickTexture);
+	m_brick->setBrickStatu(BRICK_GREEN);
+	m_brick->setPosition(ccp(100, 200));
+	addChild(m_brick);
+	m_brick->retain();
+
 	schedule(schedule_selector(GameLayer::update));
 }
 
@@ -49,6 +57,7 @@ GameLayer::~GameLayer()
 {
 	m_ball->release();
 	m_paddle->release();
+	m_brick->release();
 }
 
 void GameLayer::update(float delta)

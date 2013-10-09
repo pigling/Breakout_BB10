@@ -21,7 +21,7 @@ public:
 
 	void setBrickStatu(BrickType type);
 
-	Brick* createBrick(CCTexture2D* aTexture, BrickType type);
+	static Brick* createBrick(CCTexture2D* aTexture);
 	CCRect rect();
 };
 
