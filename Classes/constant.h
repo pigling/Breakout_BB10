@@ -8,6 +8,8 @@
 #ifndef CONSTANT_H_
 #define CONSTANT_H_
 
+#include <string>
+
 
 //scale factor for sprite. original LBreakout2 sprites (including ball and paddle) are too small to display in the device
 const float SCALE_FACTOR = 2.0f;

@@ -21,11 +21,17 @@ public:
 	void init();
 	void logicUpdate();
 	void setGameStatus(BonusType bonusType);
-	inline BallStatus getBallStatus(BonusType bonusType) { return &m_ballStatus[bounsType]; };
+	void resetAllBallStatus();
+	inline BallStatus* getBallStatus(BonusType bonusType) { return &m_ballStatus[bonusType]; };
+
+	inline void addGameScore(int score) { m_gameScore += score; };
+	inline void resetGameScore() { m_gameScore = 0; };
+	inline unsigned int getGameScore() { return m_gameScore; };
 
 	static GameDirector* sharedGameDirector();
 private:
 	BallStatus m_ballStatus[BONUS_COUNT];
+	unsigned int m_gameScore;
 
 };
 
