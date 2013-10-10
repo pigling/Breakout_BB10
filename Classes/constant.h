@@ -119,6 +119,13 @@ enum BonusType //bonus or malus
 	BONUS_MAGNET,	//bonus: while this bonus is active the paddle will attract other bonuses
 	MALUS_MAGNET,	//malus: while this malus is active the paddle will attract other maluses
 	WEAK_BALL,		//malus: with this malus active there is a 40% chance that a ball won't damage a brick
+	BONUS_COUNT,
+};
+
+struct BallStatus
+{
+	bool isEnabled;
+	int periodInFrame;
 };
 
 

@@ -6,6 +6,7 @@
  */
 
 #include "Brick.h"
+#include "Ball.h"
 
 static CCPoint BRICK_RECT = ccp(40.0f, 20.0f);
 
@@ -39,4 +40,13 @@ Brick* Brick::createBrick(CCTexture2D* aTexture)
 void Brick::setBrickStatu(BrickType type)
 {
 	setTextureRect(CCRectMake(type*BRICK_RECT.x, 0, BRICK_RECT.x, BRICK_RECT.y));
+}
+
+void Brick::collideWithBall(Ball* ball)
+{
+	if (boundingBox().intersectsRect(ball->boundingBox())) //check collision between brick and ball
+	{
+		//TODO...
+		//difference effects according to ball status
+	}
 }

@@ -86,7 +86,7 @@ void Paddle::ccTouchMoved(CCTouch* touch, CCEvent* event)
     if (touchPoint.x >= rightMost-rect().size.width/2)
     {
     	setPosition(ccp(rightMost-rect().size.width/2, getPosition().y));
-    	CCLog("%f %f %f", rightMost, rect().size.width/2, touchPoint.x);
+    	//CCLog("%f %f %f", rightMost, rect().size.width/2, touchPoint.x);
     }
     else if (touchPoint.x <= leftMost+rect().size.width/2)
     {

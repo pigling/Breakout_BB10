@@ -13,6 +13,8 @@
 
 USING_NS_CC;
 
+class Ball;
+
 class Brick : public CCSprite
 {
 public:
@@ -23,6 +25,8 @@ public:
 
 	static Brick* createBrick(CCTexture2D* aTexture);
 	CCRect rect();
+
+	void collideWithBall(Ball* ball);
 };
 
 #endif /* BRICK_H_ */

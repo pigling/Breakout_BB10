@@ -23,6 +23,7 @@ Ball* Ball::ballWithTexture(CCTexture2D* aTexture, CCRect rect)
     Ball* pBall = new Ball();
     pBall->initWithTexture(aTexture, rect);
     pBall->setScale(SCALE_FACTOR); //scale the ball
+    CCLog("%f", pBall->boundingBox().size.width);
     pBall->autorelease();
 
     return pBall;
@@ -77,9 +78,9 @@ void Ball::collideWithPaddle(Paddle* paddle)
         bool hit = false;
         float angleOffset = 0.0f;
 
-        if (getPosition().y <= highY + radius())
+        if (getPosition().y <= highY + this->boundingBox().size.height)
         {
-            setPosition( ccp(getPosition().x, highY + radius()) );
+            setPosition( ccp(getPosition().x, highY + this->boundingBox().size.height) );
             hit = true;
             angleOffset = (float)M_PI / 2;
             //CCLog("%f, %f, %f", getPosition().y, highY, radius());
