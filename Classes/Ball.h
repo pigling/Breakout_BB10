@@ -5,6 +5,7 @@
 #include "constant.h"
 
 class Paddle;
+class Brick;
 
 USING_NS_CC;
 
@@ -12,6 +13,8 @@ USING_NS_CC;
 class Ball : public CCSprite
 {
     CCPoint m_velocity;
+    CCSprite* m_shadow; //shadow follows the ball
+
 public:
     Ball(void);
     virtual ~Ball(void);
@@ -25,8 +28,8 @@ public:
 
 
 public:
-    void setVelocity(CCPoint velocity){m_velocity = velocity;}
-    CCPoint getVelocity(){return m_velocity;}
+    inline void setVelocity(CCPoint velocity) {m_velocity = velocity;}
+    inline CCPoint getVelocity() {return m_velocity;}
 
 public:
     static Ball* ballWithTexture(CCTexture2D* aTexture, CCRect rect);

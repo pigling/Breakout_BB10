@@ -88,6 +88,7 @@ enum BrickType
 	BRICK_TNT,
 	BRICK_GROWING,
 	BRICK_STRONG_4,
+	BRICK_INVISIBLE,
 };
 
 enum BonusType //bonus or malus
@@ -127,7 +128,7 @@ enum BonusType //bonus or malus
 struct BallStatus
 {
 	bool isEnabled;
-	int periodInFrame;
+	float periodInFrame;
 };
 
 

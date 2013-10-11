@@ -10,6 +10,8 @@
 #include "Paddle.h"
 #include "Brick.h"
 #include "constant.h"
+#include "GameAreaDef.h"
+#include "GameDirector.h"
 
 GameScene::GameScene()
 {
@@ -27,6 +29,12 @@ GameLayer::GameLayer()
 {
 	//TODO...
 	//create game including loading game data from file,
+
+	CCSprite* background = CCSprite::create("gfx/nukeback.png");
+	addChild(background);
+	float xBck = (GameAreaDef::getBallMoveRect().getMaxX()+GameAreaDef::getBallMoveRect().getMinX())/2;
+	float yBck = (GameAreaDef::getBallMoveRect().getMaxY()+GameAreaDef::getBallMoveRect().getMinY())/2;
+	background->setPosition(ccp(xBck, yBck));
 
 	m_ballVelocity = ccp(40.0f, -400.0f);
 	m_ball = Ball::ballWithTexture(CCTextureCache::sharedTextureCache()->addImage("gfx/ball.png"), CCRectMake(0,0,12,12));
@@ -66,10 +74,12 @@ void GameLayer::update(float delta)
 	//it should update compnonents' movement and check interaction between components
 	//it should also control the whole game layer display
 
+	GameDirector::sharedGameDirector()->logicUpdate(delta);
 	m_ball->move(delta);
 	m_ball->collideWithPaddle(m_paddle);
 
 	m_ball->draw();
+	m_brick->draw();
 }
 
 void GameScene::runThisTest()

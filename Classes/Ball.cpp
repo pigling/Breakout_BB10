@@ -37,26 +37,22 @@ void Ball::move(float delta)
     {
         setPosition( ccp( GameAreaDef::getBallMoveRect().getMaxX() - radius(), getPosition().y) );
         m_velocity.x *= -1;
-        setBallColor(BLUE_BALL);
     }
     else if (getPosition().x < GameAreaDef::getBallMoveRect().getMinX() + radius())
     {
         setPosition( ccp(GameAreaDef::getBallMoveRect().getMinX() + radius(), getPosition().y) );
         m_velocity.x *= -1;
-        setBallColor(RED_BALL);
     }
 
     if (getPosition().y > GameAreaDef::getScoreRect().getMinY() - radius())
     {
     	setPosition(ccp(getPosition().x, GameAreaDef::getScoreRect().getMinY()-radius()));
     	m_velocity.y *= -1;
-        setBallColor(DEEPGREY_BALL);
     }
     else if (getPosition().y < GameAreaDef::getFingerTouchRect().getMinY() + radius())
     {
     	setPosition(ccp(getPosition().x, GameAreaDef::getFingerTouchRect().getMinY()+radius()));
     	m_velocity.y *= -1;
-        setBallColor(GREY_BALL);
     }
 }
 

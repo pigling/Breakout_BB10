@@ -21,12 +21,19 @@ public:
 	Brick();
 	~Brick();
 
+	virtual void draw(void);
+
 	void setBrickStatu(BrickType type);
 
 	static Brick* createBrick(CCTexture2D* aTexture);
 	CCRect rect();
 
-	void collideWithBall(Ball* ball);
+	bool collideWithBall(Ball* ball);
+	void brickCrashedByBall(Ball* ball);
+
+	inline BrickType getBrickType() { return m_brickType; };
+private:
+	BrickType m_brickType;
 };
 
 #endif /* BRICK_H_ */

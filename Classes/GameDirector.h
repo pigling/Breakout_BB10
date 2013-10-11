@@ -11,6 +11,9 @@
 #include "constant.h"
 #include "cocos2d.h"
 
+USING_NS_CC;
+
+class Brick;
 
 class GameDirector
 {
@@ -19,7 +22,7 @@ public:
 	virtual ~GameDirector();
 
 	void init();
-	void logicUpdate();
+	void logicUpdate(float delta);
 	void setGameStatus(BonusType bonusType);
 	void resetAllBallStatus();
 	inline BallStatus* getBallStatus(BonusType bonusType) { return &m_ballStatus[bonusType]; };
@@ -28,10 +31,18 @@ public:
 	inline void resetGameScore() { m_gameScore = 0; };
 	inline unsigned int getGameScore() { return m_gameScore; };
 
+	inline CCArray* getArrayBalls() { return m_arrayBalls; };
+	inline CCArray* getArrayBricks() { return m_arrayBricks; };
+	inline CCArray* getArrayBonuses() { return m_arrayBonuses; };
+
 	static GameDirector* sharedGameDirector();
 private:
 	BallStatus m_ballStatus[BONUS_COUNT];
 	unsigned int m_gameScore;
+	CCArray* m_arrayBalls;
+	CCArray* m_arrayBricks;
+	CCArray* m_arrayBonuses;
+
 
 };
 

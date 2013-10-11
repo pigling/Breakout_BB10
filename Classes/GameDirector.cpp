@@ -8,19 +8,39 @@
 #include <stdlib.h>
 #include <time.h>
 #include "GameDirector.h"
+#include "Ball.h"
+#include "Brick.h"
 
-USING_NS_CC;
 
 static GameDirector* s_GameDirector = NULL;
 
-GameDirector::GameDirector()
+GameDirector::GameDirector() : m_arrayBalls(NULL),
+		m_arrayBricks(NULL), m_arrayBonuses(NULL)
 {
 
 }
 
 GameDirector::~GameDirector()
 {
-	s_GameDirector = NULL;
+	if(s_GameDirector)
+	{
+		s_GameDirector = NULL;
+	}
+	if (m_arrayBalls)
+	{
+		m_arrayBalls->release();
+		m_arrayBalls = NULL;
+	}
+	if (m_arrayBricks)
+	{
+		m_arrayBricks->release();
+		m_arrayBricks = NULL;
+	}
+	if (m_arrayBonuses)
+	{
+		m_arrayBonuses->release();
+		m_arrayBonuses = NULL;
+	}
 }
 
 GameDirector* GameDirector::sharedGameDirector()
@@ -36,11 +56,20 @@ GameDirector* GameDirector::sharedGameDirector()
 
 void GameDirector::init()
 {
+	m_arrayBalls = CCArray::create();
+	if (m_arrayBalls)
+		m_arrayBalls->retain();
+	m_arrayBonuses = CCArray::create();
+	if (m_arrayBonuses)
+		m_arrayBonuses->retain();
+	m_arrayBricks = CCArray::create();
+	if (m_arrayBricks)
+		m_arrayBricks->retain();
 	resetAllBallStatus();
 	resetGameScore();
 }
 
-void GameDirector::logicUpdate()
+void GameDirector::logicUpdate(float delta)
 {
 	//check the relationship between different bonus types
 	//check if the bonus bit available as time passed
@@ -68,11 +97,47 @@ void GameDirector::logicUpdate()
 		{
 			if (m_ballStatus[i].periodInFrame)
 			{
-				m_ballStatus[i].periodInFrame--;
-				if (!m_ballStatus[i].periodInFrame) //time out
+				m_ballStatus[i].periodInFrame -= delta;
+				if (!m_ballStatus[i].periodInFrame <= 0.0f) //time out
 				{
 					m_ballStatus[i].isEnabled = false;
 				}
+			}
+		}
+	}
+
+	CCObject* pObject;
+	CCARRAY_FOREACH(m_arrayBalls, pObject)
+	{
+		Ball* ball = (Ball*)pObject;
+		//check collision between ball and brick
+		CCObject* pObject1;
+		CCARRAY_FOREACH(m_arrayBricks, pObject1)
+		{
+			Brick* brick = (Brick*)pObject1;
+
+			if (brick->boundingBox().intersectsRect(ball->boundingBox()))
+			{
+				//first to check ball status
+				//then to check brick associated bonus
+				//for strong brick, the ball will only crash brick after some hits
+				if (m_ballStatus[ENERGY_BALL].isEnabled) //energy ball, crash brick immdiately
+				{
+
+				}
+				else if (m_ballStatus[EXPLOSIVE_BALL].isEnabled) //explosive ball, need explosive effect
+				{
+
+				}
+				else if (m_ballStatus[WEAK_BALL].isEnabled) //weak ball, 40% chance not to crash ball
+				{
+
+				}
+				else if (m_ballStatus[CHAOS].isEnabled) //chaos, ball reflected randomly
+				{
+
+				}
+				//for normal
 			}
 		}
 	}
@@ -80,7 +145,6 @@ void GameDirector::logicUpdate()
 
 void GameDirector::setGameStatus(BonusType type)
 {
-	int fps = int(1.0f/CCDirector::sharedDirector()->getSecondsPerFrame());
 	switch(type)
 	{
 	case SCORE_200:
@@ -106,11 +170,11 @@ void GameDirector::setGameStatus(BonusType type)
 		if (!m_ballStatus[type].isEnabled)
 		{
 			m_ballStatus[type].isEnabled = true;
-			m_ballStatus[type].periodInFrame = 20*fps;
+			m_ballStatus[type].periodInFrame = 20.0f;
 		}
 		else
 		{
-			m_ballStatus[type].periodInFrame += 20*fps;
+			m_ballStatus[type].periodInFrame += 20.0f;
 		}
 		break;
 
@@ -120,19 +184,19 @@ void GameDirector::setGameStatus(BonusType type)
 			if (m_ballStatus[GHOSTLY_PADDLE].isEnabled)
 			{
 				m_ballStatus[GHOSTLY_PADDLE].isEnabled = false;
-				m_ballStatus[GHOSTLY_PADDLE].periodInFrame = 0;
+				m_ballStatus[GHOSTLY_PADDLE].periodInFrame = 0.0f;
 			}
 			if (m_ballStatus[FROZEN_PADDLE].isEnabled)
 			{
 				m_ballStatus[FROZEN_PADDLE].isEnabled = false;
-				m_ballStatus[FROZEN_PADDLE].periodInFrame = 0;
+				m_ballStatus[FROZEN_PADDLE].periodInFrame = 0.0f;
 			}
 			m_ballStatus[type].isEnabled = true;
-			m_ballStatus[type].periodInFrame = 20*fps;
+			m_ballStatus[type].periodInFrame = 20.0f;
 		}
 		else
 		{
-			m_ballStatus[type].periodInFrame += 20*fps;
+			m_ballStatus[type].periodInFrame += 20.0f;
 		}
 		break;
 
@@ -142,19 +206,19 @@ void GameDirector::setGameStatus(BonusType type)
 			if (m_ballStatus[EXPLOSIVE_BALL].isEnabled)
 			{
 				m_ballStatus[EXPLOSIVE_BALL].isEnabled = false;
-				m_ballStatus[EXPLOSIVE_BALL].periodInFrame = 0;
+				m_ballStatus[EXPLOSIVE_BALL].periodInFrame = 0.0f;
 			}
 			if (m_ballStatus[WEAK_BALL].isEnabled)
 			{
 				m_ballStatus[WEAK_BALL].isEnabled = false;
-				m_ballStatus[WEAK_BALL].periodInFrame = 0;
+				m_ballStatus[WEAK_BALL].periodInFrame = 0.0f;
 			}
 			m_ballStatus[type].isEnabled = true;
-			m_ballStatus[type].periodInFrame = 5*fps;
+			m_ballStatus[type].periodInFrame = 5.0f;
 		}
 		else
 		{
-			m_ballStatus[type].periodInFrame += 5*fps;
+			m_ballStatus[type].periodInFrame += 5.0f;
 		}
 		break;
 
@@ -162,11 +226,11 @@ void GameDirector::setGameStatus(BonusType type)
 		if (!m_ballStatus[type].isEnabled)
 		{
 			m_ballStatus[type].isEnabled = true;
-			m_ballStatus[type].periodInFrame = 10*fps;
+			m_ballStatus[type].periodInFrame = 10.0f;
 		}
 		else
 		{
-			m_ballStatus[type].periodInFrame += 10*fps;
+			m_ballStatus[type].periodInFrame += 10.0f;
 		}
 		break;
 
@@ -174,11 +238,11 @@ void GameDirector::setGameStatus(BonusType type)
 		if (!m_ballStatus[type].isEnabled)
 		{
 			m_ballStatus[type].isEnabled = true;
-			m_ballStatus[type].periodInFrame = 5*fps;
+			m_ballStatus[type].periodInFrame = 5.0f;
 		}
 		else
 		{
-			m_ballStatus[type].periodInFrame += 5*fps;
+			m_ballStatus[type].periodInFrame += 5.0f;
 		}
 		break;
 
@@ -191,11 +255,11 @@ void GameDirector::setGameStatus(BonusType type)
 				m_ballStatus[SPEED_UP].periodInFrame = 0;
 			}
 			m_ballStatus[type].isEnabled = true;
-			m_ballStatus[type].periodInFrame = 20*fps;
+			m_ballStatus[type].periodInFrame = 20.0f;
 		}
 		else
 		{
-			m_ballStatus[type].periodInFrame += 20*fps;
+			m_ballStatus[type].periodInFrame += 20.0f;
 		}
 		break;
 
@@ -208,11 +272,11 @@ void GameDirector::setGameStatus(BonusType type)
 				m_ballStatus[SPEED_DOWN].periodInFrame = 0;
 			}
 			m_ballStatus[type].isEnabled = true;
-			m_ballStatus[type].periodInFrame = 20*fps;
+			m_ballStatus[type].periodInFrame = 20.0f;
 		}
 		else
 		{
-			m_ballStatus[type].periodInFrame += 20*fps;
+			m_ballStatus[type].periodInFrame += 20.0f;
 		}
 		break;
 
@@ -230,11 +294,11 @@ void GameDirector::setGameStatus(BonusType type)
 				m_ballStatus[WEAK_BALL].periodInFrame = 0;
 			}
 			m_ballStatus[type].isEnabled = true;
-			m_ballStatus[type].periodInFrame = 10*fps;
+			m_ballStatus[type].periodInFrame = 10.0f;
 		}
 		else
 		{
-			m_ballStatus[type].periodInFrame += 10*fps;
+			m_ballStatus[type].periodInFrame += 10.0f;
 		}
 		break;
 
@@ -247,11 +311,11 @@ void GameDirector::setGameStatus(BonusType type)
 				m_ballStatus[MALUS_MAGNET].periodInFrame = 0;
 			}
 			m_ballStatus[type].isEnabled = true;
-			m_ballStatus[type].periodInFrame = 20*fps;
+			m_ballStatus[type].periodInFrame = 20.0f;
 		}
 		else
 		{
-			m_ballStatus[type].periodInFrame += 20*fps;
+			m_ballStatus[type].periodInFrame += 20.0f;
 		}
 		break;
 
@@ -264,11 +328,11 @@ void GameDirector::setGameStatus(BonusType type)
 				m_ballStatus[BONUS_MAGNET].periodInFrame = 0;
 			}
 			m_ballStatus[type].isEnabled = true;
-			m_ballStatus[type].periodInFrame = 20*fps;
+			m_ballStatus[type].periodInFrame = 20.0f;
 		}
 		else
 		{
-			m_ballStatus[type].periodInFrame += 20*fps;
+			m_ballStatus[type].periodInFrame += 20.0f;
 		}
 		break;
 
@@ -286,11 +350,11 @@ void GameDirector::setGameStatus(BonusType type)
 				m_ballStatus[GHOSTLY_PADDLE].periodInFrame = 0;
 			}
 			m_ballStatus[type].isEnabled = true;
-			m_ballStatus[type].periodInFrame = 1*fps;
+			m_ballStatus[type].periodInFrame = 1.0f;
 		}
 		else
 		{
-			m_ballStatus[type].periodInFrame += 1*fps;
+			m_ballStatus[type].periodInFrame += 1.0f;
 		}
 		break;
 
@@ -298,11 +362,11 @@ void GameDirector::setGameStatus(BonusType type)
 		if (!m_ballStatus[type].isEnabled)
 		{
 			m_ballStatus[type].isEnabled = true;
-			m_ballStatus[type].periodInFrame = 20*fps;
+			m_ballStatus[type].periodInFrame = 20.0f;
 		}
 		else
 		{
-			m_ballStatus[type].periodInFrame += 20*fps;
+			m_ballStatus[type].periodInFrame += 20.0f;
 		}
 		break;
 
@@ -310,11 +374,11 @@ void GameDirector::setGameStatus(BonusType type)
 		if (!m_ballStatus[type].isEnabled)
 		{
 			m_ballStatus[type].isEnabled = true;
-			m_ballStatus[type].periodInFrame = 20*fps;
+			m_ballStatus[type].periodInFrame = 20.0f;
 		}
 		else
 		{
-			m_ballStatus[type].periodInFrame += 20*fps;
+			m_ballStatus[type].periodInFrame += 20.0f;
 		}
 		break;
 
@@ -332,11 +396,11 @@ void GameDirector::setGameStatus(BonusType type)
 				m_ballStatus[FROZEN_PADDLE].periodInFrame = 0;
 			}
 			m_ballStatus[type].isEnabled = true;
-			m_ballStatus[type].periodInFrame = 20*fps;
+			m_ballStatus[type].periodInFrame = 20.0f;
 		}
 		else
 		{
-			m_ballStatus[type].periodInFrame += 20*fps;
+			m_ballStatus[type].periodInFrame += 20.0f;
 		}
 		break;
 
@@ -354,11 +418,11 @@ void GameDirector::setGameStatus(BonusType type)
 				m_ballStatus[ENERGY_BALL].periodInFrame = 0;
 			}
 			m_ballStatus[type].isEnabled = true;
-			m_ballStatus[type].periodInFrame = 5*fps;
+			m_ballStatus[type].periodInFrame = 5.0f;
 		}
 		else
 		{
-			m_ballStatus[type].periodInFrame += 5*fps;
+			m_ballStatus[type].periodInFrame += 5.0f;
 		}
 		break;
 
@@ -371,7 +435,7 @@ void GameDirector::setGameStatus(BonusType type)
 		{
 			if (m_ballStatus[i].isEnabled)
 			{
-				m_ballStatus[i].periodInFrame += 7*fps;
+				m_ballStatus[i].periodInFrame += 7.0f;
 			}
 		}
 		break;
