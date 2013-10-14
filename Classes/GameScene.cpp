@@ -37,7 +37,7 @@ GameLayer::GameLayer()
 	background->setPosition(ccp(xBck, yBck));
 
 	m_ballVelocity = ccp(40.0f, -400.0f);
-	m_ball = Ball::ballWithTexture(CCTextureCache::sharedTextureCache()->addImage("gfx/ball.png"), CCRectMake(0,0,12,12));
+	m_ball = Ball::ballWithTexture(CCTextureCache::sharedTextureCache()->addImage("gfx/balls.png"), CCRectMake(0,0,12,12));
 	m_ball->setVelocity(m_ballVelocity);
 	m_ball->setPosition(ccp(120, 120));
 	addChild(m_ball);
