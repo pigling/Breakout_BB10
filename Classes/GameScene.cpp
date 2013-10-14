@@ -51,6 +51,7 @@ GameLayer::GameLayer()
 	addChild(m_paddle);
 	m_paddle->retain();
 
+
 	CCTexture2D* brickTexture = CCTextureCache::sharedTextureCache()->addImage("gfx/bricks.png");
 	m_brick = Brick::createBrick(brickTexture);
 	m_brick->setBrickStatu(BRICK_GREEN);
@@ -71,15 +72,13 @@ GameLayer::~GameLayer()
 void GameLayer::update(float delta)
 {
 	//this is mainly function to control the whole game
-	//it should update compnonents' movement and check interaction between components
+	//it should update components' movement and check interaction between components
 	//it should also control the whole game layer display
 
 	GameDirector::sharedGameDirector()->logicUpdate(delta);
 	m_ball->move(delta);
 	m_ball->collideWithPaddle(m_paddle);
 
-	m_ball->draw();
-	m_brick->draw();
 }
 
 void GameScene::runThisTest()

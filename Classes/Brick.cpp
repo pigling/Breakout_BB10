@@ -40,11 +40,6 @@ Brick* Brick::createBrick(CCTexture2D* aTexture)
 	pBrick->setScale(BRICK_SCALE_FACTOR);
 	pBrick->autorelease();
 
-	CCSprite* pShadow= CCSprite::create("gfx/bricks.png", CCRectMake(6*BRICK_RECT.x, 0, BRICK_RECT.x, BRICK_RECT.y));
-	pShadow->setScale(BRICK_SCALE_FACTOR);
-	pBrick->addChild(pShadow, TagShadow);
-	pShadow->autorelease();
-
 	return pBrick;
 }
 
@@ -71,16 +66,6 @@ bool Brick::collideWithBall(Ball* ball)
 void Brick::brickCrashedByBall(Ball* ball)
 {
 	//remove shadow
-	CCSprite* shadow = (CCSprite*)getChildByTag(TagShadow);
-	shadow->setVisible(false);
-	removeChild(shadow, true);
-	//shadow->release(); //no need as autorelease in init()
+
 }
 
-void Brick::draw()
-{
-	CCSprite* shadow = (CCSprite*)getChildByTag(TagShadow);
-	shadow->setPosition(ccp(getPosition().x+boundingBox().size.width/2, getPosition().y-boundingBox().size.height/2));
-	draw();
-	shadow->draw();
-}

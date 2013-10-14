@@ -21,7 +21,6 @@ public:
 	Brick();
 	~Brick();
 
-	virtual void draw(void);
 
 	void setBrickStatu(BrickType type);
 
