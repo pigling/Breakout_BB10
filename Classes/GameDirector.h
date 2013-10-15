@@ -14,6 +14,8 @@
 USING_NS_CC;
 
 class Brick;
+class Ball;
+class Extra;
 
 class GameDirector
 {
@@ -25,6 +27,11 @@ public:
 	void logicUpdate(float delta);
 	void setGameStatus(BonusType bonusType);
 	void resetAllBallStatus();
+
+	void addBall(Ball* ball);
+	void addBrick(Brick* brick);
+	void addExtra(Extra* extra);
+
 	inline BallStatus* getBallStatus(BonusType bonusType) { return &m_ballStatus[bonusType]; };
 
 	inline void addGameScore(int score) { m_gameScore += score; };
@@ -33,7 +40,7 @@ public:
 
 	inline CCArray* getArrayBalls() { return m_arrayBalls; };
 	inline CCArray* getArrayBricks() { return m_arrayBricks; };
-	inline CCArray* getArrayBonuses() { return m_arrayBonuses; };
+	inline CCArray* getArrayExtras() { return m_arrayExtras; };
 
 	static GameDirector* sharedGameDirector();
 private:
@@ -41,7 +48,7 @@ private:
 	unsigned int m_gameScore;
 	CCArray* m_arrayBalls;
 	CCArray* m_arrayBricks;
-	CCArray* m_arrayBonuses;
+	CCArray* m_arrayExtras;
 
 
 };

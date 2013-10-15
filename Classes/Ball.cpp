@@ -4,7 +4,7 @@
 
 static CCPoint BALL_RECT = ccp(12.0f, 12.0f);
 
-Ball::Ball(void)
+Ball::Ball(void) : m_shadow(NULL)
 {
 }
 
@@ -24,7 +24,14 @@ Ball* Ball::ballWithTexture(CCTexture2D* aTexture, CCRect rect)
     pBall->initWithTexture(aTexture, rect);
     pBall->setScale(SCALE_FACTOR); //scale the ball
     CCLog("%f", pBall->boundingBox().size.width);
-    pBall->autorelease();
+    //pBall->autorelease();
+
+
+    CCSprite* shadow = new CCSprite();
+    shadow->initWithFile("gfx/ball_shadow.png");
+    pBall->addChild(shadow);
+    shadow->autorelease();
+    shadow->setPosition(ccp(10, -10));
 
     return pBall;
 }
@@ -91,7 +98,6 @@ void Ball::collideWithPaddle(Paddle* paddle)
             float velocityAngle = -ccpToAngle(m_velocity) + 0.5f * hitAngle;
 
             m_velocity = ccpMult(ccpForAngle(velocityAngle), scalarVelocity);
-            setBallColor(GREEN_BALL);
         }
     }
 }
@@ -99,4 +105,9 @@ void Ball::collideWithPaddle(Paddle* paddle)
 void Ball::setBallColor(BallColor color)
 {
 	setTextureRect(CCRectMake(color*12, 0, 12, 12));
+}
+
+void Ball::draw()
+{
+	CCSprite::draw();
 }

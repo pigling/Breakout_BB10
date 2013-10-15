@@ -10,36 +10,56 @@
 #include "GameDirector.h"
 #include "Ball.h"
 #include "Brick.h"
+#include "Extra.h"
 
 
 static GameDirector* s_GameDirector = NULL;
 
 GameDirector::GameDirector() : m_arrayBalls(NULL),
-		m_arrayBricks(NULL), m_arrayBonuses(NULL)
+		m_arrayBricks(NULL), m_arrayExtras(NULL)
 {
 
 }
 
 GameDirector::~GameDirector()
 {
-	if(s_GameDirector)
-	{
-		s_GameDirector = NULL;
-	}
+	CCObject* pObject;
 	if (m_arrayBalls)
 	{
+		CCARRAY_FOREACH(m_arrayBalls, pObject)
+		{
+			Ball* ball = (Ball*)pObject;
+			ball->removeFromParent();
+		}
+		m_arrayBalls->removeAllObjects();
 		m_arrayBalls->release();
 		m_arrayBalls = NULL;
 	}
 	if (m_arrayBricks)
 	{
+		CCARRAY_FOREACH(m_arrayBricks, pObject)
+		{
+			Brick* brick = (Brick*)pObject;
+			brick->removeFromParent();
+		}
+		m_arrayBricks->removeAllObjects();
 		m_arrayBricks->release();
 		m_arrayBricks = NULL;
 	}
-	if (m_arrayBonuses)
+	if (m_arrayExtras)
 	{
-		m_arrayBonuses->release();
-		m_arrayBonuses = NULL;
+		CCARRAY_FOREACH(m_arrayExtras, pObject)
+		{
+			Extra* extra = (Extra*)pObject;
+			extra->removeFromParent();
+		}
+		m_arrayExtras->removeAllObjects();
+		m_arrayExtras->release();
+		m_arrayExtras = NULL;
+	}
+	if(s_GameDirector)
+	{
+		s_GameDirector = NULL;
 	}
 }
 
@@ -59,9 +79,9 @@ void GameDirector::init()
 	m_arrayBalls = CCArray::create();
 	if (m_arrayBalls)
 		m_arrayBalls->retain();
-	m_arrayBonuses = CCArray::create();
-	if (m_arrayBonuses)
-		m_arrayBonuses->retain();
+	m_arrayExtras = CCArray::create();
+	if (m_arrayExtras)
+		m_arrayExtras->retain();
 	m_arrayBricks = CCArray::create();
 	if (m_arrayBricks)
 		m_arrayBricks->retain();
@@ -123,21 +143,40 @@ void GameDirector::logicUpdate(float delta)
 				//for strong brick, the ball will only crash brick after some hits
 				if (m_ballStatus[ENERGY_BALL].isEnabled) //energy ball, crash brick immdiately
 				{
+					CCLog("Energy Ball");
 
 				}
 				else if (m_ballStatus[EXPLOSIVE_BALL].isEnabled) //explosive ball, need explosive effect
 				{
-
+					CCLog("Explosive Ball");
 				}
 				else if (m_ballStatus[WEAK_BALL].isEnabled) //weak ball, 40% chance not to crash ball
 				{
-
+					CCLog("Weak Ball");
 				}
 				else if (m_ballStatus[CHAOS].isEnabled) //chaos, ball reflected randomly
 				{
-
+					CCLog("Chaos");
 				}
-				//for normal
+				//for normal status, brick crashed by ball
+				brick->brickCrashedByBall(ball);
+				CCPoint velocity = ball->getVelocity();
+				if (brick->boundingBox().getMinX()+ball->radius() < ball->getPositionX() < brick->boundingBox().getMaxX()-ball->radius())
+				{
+					velocity.y *= -1;
+				}
+				else if (brick->boundingBox().getMinX()+ball->radius() == ball->getPositionX() || brick->boundingBox().getMaxX()-ball->radius() == ball->getPositionX())
+				{
+					if (brick->boundingBox().getMaxY()+ball->radius() == ball->getPositionY() || brick->boundingBox().getMinY()-ball->radius() == ball->getPositionY())
+					{
+						velocity = ccpMult(velocity, -1.0f);
+					}
+					else
+					{
+						velocity.x *= -1;
+					}
+				}
+				ball->setVelocity(velocity);
 			}
 		}
 	}
@@ -457,3 +496,26 @@ void GameDirector::resetAllBallStatus()
 	}
 }
 
+void GameDirector::addBall(Ball* ball)
+{
+	if (m_arrayBalls)
+	{
+		m_arrayBalls->addObject(ball);
+	}
+}
+
+void GameDirector::addBrick(Brick* brick)
+{
+	if (m_arrayBricks)
+	{
+		m_arrayBricks->addObject(brick);
+	}
+}
+
+void GameDirector::addExtra(Extra* extra)
+{
+	if (m_arrayExtras)
+	{
+		m_arrayExtras->addObject(extra);
+	}
+}

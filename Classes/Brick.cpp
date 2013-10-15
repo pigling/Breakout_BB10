@@ -38,7 +38,7 @@ Brick* Brick::createBrick(CCTexture2D* aTexture)
 	pBrick->initWithTexture(aTexture);
 	pBrick->setTextureRect(CCRectMake(BRICK_RECT.x, 0, BRICK_RECT.x, BRICK_RECT.y));
 	pBrick->setScale(BRICK_SCALE_FACTOR);
-	pBrick->autorelease();
+	//pBrick->autorelease();
 
 	return pBrick;
 }

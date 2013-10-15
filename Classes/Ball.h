@@ -19,6 +19,8 @@ public:
     Ball(void);
     virtual ~Ball(void);
 
+    virtual void draw(void);
+
     float radius();
     //BOOL initWithTexture(CCTexture2D* aTexture);
     //virtual void setTexture(CCTexture2D* newTexture);
