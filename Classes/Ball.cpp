@@ -28,7 +28,7 @@ Ball* Ball::ballWithTexture(CCTexture2D* aTexture, CCRect rect)
 
 
     CCSprite* shadow = new CCSprite();
-    shadow->initWithFile("gfx/ball_shadow.png");
+    shadow->initWithFile("gfx/fr_llc.png");
     pBall->addChild(shadow);
     shadow->autorelease();
     shadow->setPosition(ccp(10, -10));

@@ -39,6 +39,8 @@ public:
 	GameLayer();
 	~GameLayer();
 
+	void addBrick(CCPoint point);
+
 	void update(float delta);
 };
 

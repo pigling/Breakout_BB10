@@ -12,6 +12,8 @@
 #include "constant.h"
 #include "GameAreaDef.h"
 #include "GameDirector.h"
+#include <stdlib.h>
+#include <time.h>
 
 GameScene::GameScene()
 {
@@ -43,7 +45,7 @@ GameLayer::GameLayer()
 	m_ball->setPosition(ccp(120, 120));
 	addChild(m_ball);
 	m_ball->retain(); //release from GameDirector
-
+	GameDirector::sharedGameDirector()->addBall(m_ball);
 
 	CCTexture2D* paddleTexture = CCTextureCache::sharedTextureCache()->addImage("gfx/paddle.png");
 	m_paddle = Paddle::paddleWithTexture(paddleTexture);
@@ -52,17 +54,19 @@ GameLayer::GameLayer()
 	addChild(m_paddle);
 	m_paddle->retain();
 
-
+/*
 	CCTexture2D* brickTexture = CCTextureCache::sharedTextureCache()->addImage("gfx/bricks.png");
 	m_brick = Brick::createBrick(brickTexture);
 	m_brick->setBrickStatu(BRICK_GREEN);
 	m_brick->setPosition(ccp(100, 200));
 	addChild(m_brick);
 	m_brick->retain();  //release from GameDirector
-
-	GameDirector::sharedGameDirector()->addBall(m_ball);
 	GameDirector::sharedGameDirector()->addBrick(m_brick);
-
+*/
+	for (int i = 0; i < 5; i++)
+	{
+		addBrick(ccp(100+60*i, 600));
+	}
 	schedule(schedule_selector(GameLayer::update));
 }
 
@@ -90,4 +94,15 @@ void GameLayer::update(float delta)
 void GameScene::runThisTest()
 {
 	CCDirector::sharedDirector()->replaceScene(this);
+}
+
+void GameLayer::addBrick(CCPoint point)
+{
+	CCTexture2D* brickTexture = CCTextureCache::sharedTextureCache()->addImage("gfx/bricks.png");
+	Brick* brick = Brick::createBrick(brickTexture);
+	brick->setBrickStatu(BrickType(rand()%6+BRICK_BROWN));
+	brick->setPosition(point);
+	addChild(brick);
+	//m_brick->retain();
+	GameDirector::sharedGameDirector()->addBrick(brick);
 }

@@ -163,7 +163,11 @@ void GameDirector::logicUpdate(float delta)
 				CCPoint velocity = ball->getVelocity();
 				if (brick->boundingBox().getMinX()+ball->radius() < ball->getPositionX() < brick->boundingBox().getMaxX()-ball->radius())
 				{
-					velocity.y *= -1;
+					float yvector = ball->getPositionY()-brick->getPositionY();
+					if (yvector*velocity.y < 0)
+					{
+						velocity.y *= -1;
+					}
 				}
 				else if (brick->boundingBox().getMinX()+ball->radius() == ball->getPositionX() || brick->boundingBox().getMaxX()-ball->radius() == ball->getPositionX())
 				{
@@ -173,7 +177,11 @@ void GameDirector::logicUpdate(float delta)
 					}
 					else
 					{
-						velocity.x *= -1;
+						float xvector = ball->getPositionX()-brick->getPositionX();
+						if (xvector*velocity.x < 0)
+						{
+							velocity.x *= -1;
+						}
 					}
 				}
 				ball->setVelocity(velocity);
