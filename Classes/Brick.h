@@ -30,6 +30,8 @@ public:
 	bool collideWithBall(Ball* ball);
 	void brickCrashedByBall(Ball* ball);
 
+	void callbackRemoveBrick();
+
 	inline BrickType getBrickType() { return m_brickType; };
 private:
 	BrickType m_brickType;

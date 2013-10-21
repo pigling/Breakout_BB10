@@ -32,6 +32,10 @@ public:
 	void addBrick(Brick* brick);
 	void addExtra(Extra* extra);
 
+	void removeBall(Ball* ball);
+	void removeBrick(Brick* brick);
+	void removeExtra(Extra* extra);
+
 	inline BallStatus* getBallStatus(BonusType bonusType) { return &m_ballStatus[bonusType]; };
 
 	inline void addGameScore(int score) { m_gameScore += score; };

@@ -65,7 +65,25 @@ bool Brick::collideWithBall(Ball* ball)
 
 void Brick::brickCrashedByBall(Ball* ball)
 {
-	//remove shadow
+	//1.remove shadow
+	//TODO...
 
+	//2.fade in and moveby two actions in parallel
+	//and then callback removebrick
+	CCActionInterval* fadeout = CCFadeOut::create(1.0f);
+	CCPoint delta = ccpMult(ccpNormalize(ball->getVelocity()), this->boundingBox().size.width*3);
+	CCActionInterval* moveby = CCMoveBy::create(1.0f, delta);
+	CCActionInterval* spawn = CCSpawn::create(fadeout, moveby, NULL);
+
+	CCFiniteTimeAction* removebrick = CCCallFunc::create(this, callfunc_selector(Brick::callbackRemoveBrick));
+
+	this->runAction(CCSequence::create(spawn, removebrick, NULL));
+
+}
+
+void Brick::callbackRemoveBrick()
+{
+	GameDirector::sharedGameDirector()->removeBrick(this);
+	this->removeFromParent();
 }
 

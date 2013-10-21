@@ -31,7 +31,6 @@ GameDirector::~GameDirector()
 			Ball* ball = (Ball*)pObject;
 			ball->removeFromParent();
 		}
-		m_arrayBalls->removeAllObjects();
 		m_arrayBalls->release();
 		m_arrayBalls = NULL;
 	}
@@ -42,7 +41,6 @@ GameDirector::~GameDirector()
 			Brick* brick = (Brick*)pObject;
 			brick->removeFromParent();
 		}
-		m_arrayBricks->removeAllObjects();
 		m_arrayBricks->release();
 		m_arrayBricks = NULL;
 	}
@@ -53,7 +51,6 @@ GameDirector::~GameDirector()
 			Extra* extra = (Extra*)pObject;
 			extra->removeFromParent();
 		}
-		m_arrayExtras->removeAllObjects();
 		m_arrayExtras->release();
 		m_arrayExtras = NULL;
 	}
@@ -159,28 +156,32 @@ void GameDirector::logicUpdate(float delta)
 					CCLog("Chaos");
 				}
 				//for normal status, brick crashed by ball
-				brick->brickCrashedByBall(ball);
+				//brick->brickCrashedByBall(ball);
 				CCPoint velocity = ball->getVelocity();
 				if (brick->boundingBox().getMinX()+ball->radius() < ball->getPositionX() < brick->boundingBox().getMaxX()-ball->radius())
 				{
 					float yvector = ball->getPositionY()-brick->getPositionY();
-					if (yvector*velocity.y < 0)
+					if (yvector*velocity.y < 0) //make sure the ball moves away from brick
 					{
 						velocity.y *= -1;
 					}
+					//brick crashed by ball
+					brick->brickCrashedByBall(ball);
 				}
 				else if (brick->boundingBox().getMinX()+ball->radius() == ball->getPositionX() || brick->boundingBox().getMaxX()-ball->radius() == ball->getPositionX())
 				{
 					if (brick->boundingBox().getMaxY()+ball->radius() == ball->getPositionY() || brick->boundingBox().getMinY()-ball->radius() == ball->getPositionY())
 					{
 						velocity = ccpMult(velocity, -1.0f);
+						brick->brickCrashedByBall(ball);
 					}
 					else
 					{
 						float xvector = ball->getPositionX()-brick->getPositionX();
-						if (xvector*velocity.x < 0)
+						if (xvector*velocity.x < 0) //make sure the ball moves away from brick
 						{
 							velocity.x *= -1;
+							brick->brickCrashedByBall(ball);
 						}
 					}
 				}
@@ -526,4 +527,24 @@ void GameDirector::addExtra(Extra* extra)
 	{
 		m_arrayExtras->addObject(extra);
 	}
+}
+
+void GameDirector::removeBall(Ball* ball)
+{
+	if (m_arrayBalls)
+		m_arrayBalls->removeObject(ball);
+}
+
+void GameDirector::removeBrick(Brick* brick)
+{
+	if (m_arrayBricks)
+	{
+		m_arrayBricks->removeObject(brick);
+	}
+}
+
+void GameDirector::removeExtra(Extra* extra)
+{
+	if (m_arrayExtras)
+		m_arrayExtras->removeObject(extra);
 }
