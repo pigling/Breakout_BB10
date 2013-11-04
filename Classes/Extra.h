@@ -29,10 +29,11 @@ public:
 	void setBonusType(BonusType type);
 	inline BonusType getBonusType() { return m_bonus; };
 
-	virtual void draw(void);
+	//virtual void draw(void);
 
 	static Extra* createExtra(CCTexture2D* aTexture);
 	bool collidewithPaddle(Paddle* paddle);
+	void move(float delta);
 };
 
 #endif /* EXTRA_H_ */

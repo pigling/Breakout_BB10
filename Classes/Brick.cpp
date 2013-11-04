@@ -7,6 +7,7 @@
 
 #include "Brick.h"
 #include "Ball.h"
+#include "Extra.h"
 #include "GameDirector.h"
 
 static CCPoint BRICK_RECT = ccp(40.0f, 20.0f);
@@ -38,7 +39,18 @@ Brick* Brick::createBrick(CCTexture2D* aTexture)
 	pBrick->initWithTexture(aTexture);
 	pBrick->setTextureRect(CCRectMake(BRICK_RECT.x, 0, BRICK_RECT.x, BRICK_RECT.y));
 	pBrick->setScale(BRICK_SCALE_FACTOR);
-	//pBrick->autorelease();
+	pBrick->autorelease();
+
+	CCSprite* pShadow = new CCSprite();
+	pShadow->initWithTexture(aTexture, CCRectMake(6*BRICK_RECT.x, 0, BRICK_RECT.x, BRICK_RECT.y));
+	//CCSprite* pShadow= CCSprite::create("gfx/bricks.png", CCRectMake(6*BRICK_RECT.x, 0, BRICK_RECT.x, BRICK_RECT.y));
+	if (pShadow)
+	{
+		pShadow->setScale(0.8f);
+		pBrick->addChild(pShadow);
+		pShadow->autorelease();
+		pShadow->setPosition(ccp(20, -10));
+	}
 
 	return pBrick;
 }
@@ -65,6 +77,14 @@ bool Brick::collideWithBall(Ball* ball)
 
 void Brick::brickCrashedByBall(Ball* ball)
 {
+	//0.create extra according to current brick's attribute
+	CCTexture2D* extraTexture = CCTextureCache::sharedTextureCache()->addImage("gfx/extras.png");
+	Extra* extra = Extra::createExtra(extraTexture);
+	extra->setBonusType(SCORE_1000); //this should be changed to the bonus type associated with brick in future
+	extra->setPosition(getPosition());
+	GameDirector::sharedGameDirector()->addExtra(extra);
+	this->getParent()->addChild(extra);
+
 	//1.remove shadow
 	//TODO...
 

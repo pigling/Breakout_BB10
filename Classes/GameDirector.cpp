@@ -11,12 +11,13 @@
 #include "Ball.h"
 #include "Brick.h"
 #include "Extra.h"
+#include "Paddle.h"
 
 
 static GameDirector* s_GameDirector = NULL;
 
 GameDirector::GameDirector() : m_arrayBalls(NULL),
-		m_arrayBricks(NULL), m_arrayExtras(NULL)
+		m_arrayBricks(NULL), m_arrayExtras(NULL), m_paddle(NULL)
 {
 
 }
@@ -53,6 +54,10 @@ GameDirector::~GameDirector()
 		}
 		m_arrayExtras->release();
 		m_arrayExtras = NULL;
+	}
+	if (m_paddle)
+	{
+		m_paddle = NULL;
 	}
 	if(s_GameDirector)
 	{
@@ -127,6 +132,8 @@ void GameDirector::logicUpdate(float delta)
 	CCARRAY_FOREACH(m_arrayBalls, pObject)
 	{
 		Ball* ball = (Ball*)pObject;
+		ball->move(delta);
+		ball->collideWithPaddle(m_paddle);
 		//check collision between ball and brick
 		CCObject* pObject1;
 		CCARRAY_FOREACH(m_arrayBricks, pObject1)
@@ -164,9 +171,9 @@ void GameDirector::logicUpdate(float delta)
 					if (yvector*velocity.y < 0) //make sure the ball moves away from brick
 					{
 						velocity.y *= -1;
+						//brick crashed by ball
+						brick->brickCrashedByBall(ball);
 					}
-					//brick crashed by ball
-					brick->brickCrashedByBall(ball);
 				}
 				else if (brick->boundingBox().getMinX()+ball->radius() == ball->getPositionX() || brick->boundingBox().getMaxX()-ball->radius() == ball->getPositionX())
 				{
@@ -188,6 +195,13 @@ void GameDirector::logicUpdate(float delta)
 				ball->setVelocity(velocity);
 			}
 		}
+	}
+
+	CCARRAY_FOREACH(m_arrayExtras, pObject)
+	{
+		Extra* extra = (Extra*)pObject;
+		extra->move(delta);
+		extra->collidewithPaddle(m_paddle);
 	}
 }
 
@@ -547,4 +561,9 @@ void GameDirector::removeExtra(Extra* extra)
 {
 	if (m_arrayExtras)
 		m_arrayExtras->removeObject(extra);
+}
+
+void GameDirector::addPaddle(Paddle* paddle)
+{
+	m_paddle = paddle;
 }

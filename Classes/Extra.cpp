@@ -8,9 +8,11 @@
 #include "Extra.h"
 #include "Paddle.h"
 #include "GameDirector.h"
+#include "GameAreaDef.h"
 
 
 static CCPoint EXTRA_RECT = ccp(40.0f, 20.0f);
+static float EXTRA_DOWNSPEED = 50.0f;
 
 enum TAG {
 	TagShadow = 1,
@@ -34,10 +36,17 @@ Extra* Extra::createExtra(CCTexture2D* aTexture)
 	pExtra->setScale(BRICK_SCALE_FACTOR);
 	pExtra->autorelease();
 
-	CCSprite* pShadow= CCSprite::create("gfx/bricks.png", CCRectMake(6*EXTRA_RECT.x, 0, EXTRA_RECT.x, EXTRA_RECT.y));
-	pShadow->setScale(BRICK_SCALE_FACTOR);
-	pExtra->addChild(pShadow, TagShadow);
-	pShadow->autorelease();
+	CCTexture2D* texture = CCTextureCache::sharedTextureCache()->addImage("gfx/bricks.png");
+	CCSprite* pShadow = new CCSprite();
+	pShadow->initWithTexture(texture, CCRectMake(6*EXTRA_RECT.x, 0, EXTRA_RECT.x, EXTRA_RECT.y));
+	//CCSprite* pShadow= CCSprite::create("gfx/bricks.png", CCRectMake(6*EXTRA_RECT.x, 0, EXTRA_RECT.x, EXTRA_RECT.y));
+	if (pShadow)
+	{
+		pShadow->setScale(0.8f);
+		pExtra->addChild(pShadow, TagShadow);
+		pShadow->autorelease();
+		pShadow->setPosition(ccp(20, -10));
+	}
 
 	return pExtra;
 }
@@ -48,20 +57,31 @@ void Extra::setBonusType(BonusType type)
 	setTextureRect(CCRectMake(EXTRA_RECT.x*type, 0, EXTRA_RECT.x, EXTRA_RECT.y));
 }
 
+/*
 void Extra::draw()
 {
-	CCSprite* shadow = (CCSprite*)(getChildByTag(TagShadow));
-	shadow->setPosition(ccp(getPosition().x+boundingBox().size.width/2, getPosition().y-boundingBox().size.height/2));
-	this->draw();
-	shadow->draw();
+	CCSprite::draw();
 }
+*/
 
 bool Extra::collidewithPaddle(Paddle* paddle)
 {
 	if (boundingBox().intersectsRect(paddle->boundingBox()))
 	{
 		//GameDirector::sharedGameDirector()->setGameStatus(m_bonus);
+		removeFromParent();
+		GameDirector::sharedGameDirector()->removeExtra(this);
 		return true;
 	}
 	return false;
+}
+
+void Extra::move(float delta)
+{
+	setPositionY(getPositionY()-EXTRA_DOWNSPEED*delta);
+	if (getPositionY() < GameAreaDef::getFingerTouchRect().getMinY())
+	{
+		removeFromParent();
+		GameDirector::sharedGameDirector()->removeExtra(this);
+	}
 }

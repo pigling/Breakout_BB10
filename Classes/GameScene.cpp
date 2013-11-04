@@ -53,6 +53,7 @@ GameLayer::GameLayer()
 	m_paddle->setPosition(ccp(54, 20));
 	addChild(m_paddle);
 	m_paddle->retain();
+	GameDirector::sharedGameDirector()->addPaddle(m_paddle);
 
 /*
 	CCTexture2D* brickTexture = CCTextureCache::sharedTextureCache()->addImage("gfx/bricks.png");
@@ -84,8 +85,9 @@ void GameLayer::update(float delta)
 	//it should also control the whole game layer display
 
 	GameDirector::sharedGameDirector()->logicUpdate(delta);
-	m_ball->move(delta);
-	m_ball->collideWithPaddle(m_paddle);
+	//m_ball->move(delta);
+	//m_ball->collideWithPaddle(m_paddle);
+
 
 	//m_ball->draw();
 

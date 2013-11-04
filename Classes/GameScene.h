@@ -16,6 +16,7 @@ class Ball;
 class Paddle;
 class Brick;
 
+
 class GameScene : public CCScene
 {
 public:

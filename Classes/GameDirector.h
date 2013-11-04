@@ -16,6 +16,7 @@ USING_NS_CC;
 class Brick;
 class Ball;
 class Extra;
+class Paddle;
 
 class GameDirector
 {
@@ -31,6 +32,7 @@ public:
 	void addBall(Ball* ball);
 	void addBrick(Brick* brick);
 	void addExtra(Extra* extra);
+	void addPaddle(Paddle* paddle);
 
 	void removeBall(Ball* ball);
 	void removeBrick(Brick* brick);
@@ -53,6 +55,7 @@ private:
 	CCArray* m_arrayBalls;
 	CCArray* m_arrayBricks;
 	CCArray* m_arrayExtras;
+	Paddle* m_paddle;
 
 
 };

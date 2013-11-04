@@ -32,9 +32,13 @@ public:
 
 	void callbackRemoveBrick();
 
+	inline void setBonusType(BonusType type) { m_bonusType = type; };
+	inline BonusType getBonusType() { return m_bonusType; };
+
 	inline BrickType getBrickType() { return m_brickType; };
 private:
 	BrickType m_brickType;
+	BonusType m_bonusType;
 };
 
 #endif /* BRICK_H_ */
